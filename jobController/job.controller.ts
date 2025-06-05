@@ -1,24 +1,21 @@
 import { RequestHandler } from "express";
+import { StatusCodes } from "http-status-codes";
 import { HydratedDocument } from "mongoose";
-import { nanoid } from "nanoid";
 import { default as Job } from "../models/jobModel.js";
 import { IJob } from "../types/types.js";
 
-let jobs = [
-  { id: nanoid(), company: "apple", position: "front-end" },
-  { id: nanoid(), company: "google", position: "back-end" },
-];
-
 const getAllJobsHandler: RequestHandler = async (req, res) => {
   const jobsFromDB = await Job.find({});
-  res.status(200).json({ jobs: jobsFromDB });
+  res.status(StatusCodes.OK).json({ jobs: jobsFromDB });
 };
 
 const createJobHandler: RequestHandler = async (req, res) => {
   const { company, position }: { company: string; position: string } = req.body;
 
   if (!company || !position) {
-    res.status(400).json({ msg: "please provide company and position" });
+    res
+      .status(StatusCodes.BAD_REQUEST)
+      .json({ msg: "please provide company and position" });
     return;
   }
 
@@ -26,23 +23,25 @@ const createJobHandler: RequestHandler = async (req, res) => {
 
   const job = await newJob.save();
 
-  res.status(201).json({ msg: "Job created successfully", job });
+  res
+    .status(StatusCodes.CREATED)
+    .json({ msg: "Job created successfully", job });
 };
 
 const getJobHandler: RequestHandler<{ id: string }> = async (req, res) => {
   const { id } = req.params;
 
   if (!id) {
-    res.status(400).json({ msg: "Please provide job id" });
+    res.status(StatusCodes.BAD_REQUEST).json({ msg: "Please provide job id" });
     return;
   }
 
   const job = await Job.findById(id);
   if (!job) {
-    res.status(404).json({ msg: "Job not found" });
+    res.status(StatusCodes.NOT_FOUND).json({ msg: "Job not found" });
     return;
   }
-  res.status(200).json({ job });
+  res.status(StatusCodes.OK).json({ job });
 };
 
 const updateJobHandler: RequestHandler<
@@ -54,7 +53,9 @@ const updateJobHandler: RequestHandler<
   const body = req.body;
 
   if (!body?.company && !body?.position) {
-    res.status(400).json({ msg: "Please provide company or position" });
+    res
+      .status(StatusCodes.BAD_REQUEST)
+      .json({ msg: "Please provide company or position" });
     return;
   }
   const updatedJob = await Job.findByIdAndUpdate(id, req.body, {
@@ -62,35 +63,35 @@ const updateJobHandler: RequestHandler<
   });
 
   if (!updatedJob) {
-    res.status(404).json({ msg: "Job not found" });
+    res.status(StatusCodes.NOT_FOUND).json({ msg: "Job not found" });
     return;
   }
 
   res
-    .status(200)
+    .status(StatusCodes.OK)
     .json({ message: "Job updated successfully", job: updatedJob });
 };
 
 const deleteJobHandler: RequestHandler<{ id: string }> = async (req, res) => {
   const { id } = req.params;
   if (!id) {
-    res.status(400).json({ msg: "Please provide job id" });
+    res.status(StatusCodes.BAD_REQUEST).json({ msg: "Please provide job id" });
     return;
   }
   const job = await Job.findById(id);
   if (!job) {
-    res.status(404).json({ msg: "Job not found" });
+    res.status(StatusCodes.NOT_FOUND).json({ msg: "Job not found" });
     return;
   }
 
   await Job.findByIdAndDelete(id);
-  res.status(204).json({
+  res.status(StatusCodes.NO_CONTENT).json({
     msg: "Job deleted successfully",
   });
 };
 
 const notFoundHandler: RequestHandler = async (req, res) => {
-  res.status(404).send("Page not found");
+  res.status(StatusCodes.NOT_FOUND).send("Page not found");
 };
 
 export {
