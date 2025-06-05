@@ -1,4 +1,4 @@
-import express, { NextFunction, Request, Response } from "express";
+import express from "express";
 import "express-async-errors";
 import { connect } from "mongoose";
 import morgan from "morgan";
@@ -7,6 +7,7 @@ import { MONGO_URI, NODE_ENV, PORT } from "./constants.js";
 // controllers
 import { notFoundHandler } from "./jobController/job.controller.js";
 // routes
+import errorHandlingMiddleware from "./middleware/errorHandlingMiddleware.js";
 import JobRouter from "./routes/jobs.routes.js";
 
 const app = express();
@@ -19,10 +20,7 @@ app.use("/api/v1/jobs", JobRouter);
 
 app.get("/{*splat}", notFoundHandler);
 
-app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-  console.log(err);
-  res.status(500).json({ msg: "something went wrong" });
-});
+app.use(errorHandlingMiddleware);
 
 try {
   await connect(MONGO_URI);

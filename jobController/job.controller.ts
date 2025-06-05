@@ -1,6 +1,7 @@
 import { RequestHandler } from "express";
 import { StatusCodes } from "http-status-codes";
 import { HydratedDocument } from "mongoose";
+import { NotFoundError } from "../errors/customErrors.js";
 import { default as Job } from "../models/jobModel.js";
 import { IJob } from "../types/types.js";
 
@@ -32,14 +33,12 @@ const getJobHandler: RequestHandler<{ id: string }> = async (req, res) => {
   const { id } = req.params;
 
   if (!id) {
-    res.status(StatusCodes.BAD_REQUEST).json({ msg: "Please provide job id" });
-    return;
+    throw new NotFoundError("Please provide job id");
   }
 
   const job = await Job.findById(id);
   if (!job) {
-    res.status(StatusCodes.NOT_FOUND).json({ msg: "Job not found" });
-    return;
+    throw new NotFoundError("Job not found");
   }
   res.status(StatusCodes.OK).json({ job });
 };
@@ -63,8 +62,7 @@ const updateJobHandler: RequestHandler<
   });
 
   if (!updatedJob) {
-    res.status(StatusCodes.NOT_FOUND).json({ msg: "Job not found" });
-    return;
+    throw new NotFoundError("Job not found");
   }
 
   res
@@ -75,13 +73,11 @@ const updateJobHandler: RequestHandler<
 const deleteJobHandler: RequestHandler<{ id: string }> = async (req, res) => {
   const { id } = req.params;
   if (!id) {
-    res.status(StatusCodes.BAD_REQUEST).json({ msg: "Please provide job id" });
-    return;
+    throw new NotFoundError("Please provide job id");
   }
   const job = await Job.findById(id);
   if (!job) {
-    res.status(StatusCodes.NOT_FOUND).json({ msg: "Job not found" });
-    return;
+    throw new NotFoundError("Job not found");
   }
 
   await Job.findByIdAndDelete(id);
@@ -91,7 +87,7 @@ const deleteJobHandler: RequestHandler<{ id: string }> = async (req, res) => {
 };
 
 const notFoundHandler: RequestHandler = async (req, res) => {
-  res.status(StatusCodes.NOT_FOUND).send("Page not found");
+  throw new NotFoundError("Page not found");
 };
 
 export {
