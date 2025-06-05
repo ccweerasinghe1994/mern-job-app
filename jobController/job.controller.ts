@@ -30,15 +30,7 @@ const createJobHandler: RequestHandler = async (req, res) => {
 
 const getJobHandler: RequestHandler<{ id: string }> = async (req, res) => {
   const { id } = req.params;
-
-  if (!id) {
-    throw new NotFoundError("Please provide job id");
-  }
-
   const job = await Job.findById(id);
-  if (!job) {
-    throw new NotFoundError("Job not found");
-  }
   res.status(StatusCodes.OK).json({ job });
 };
 
@@ -48,20 +40,9 @@ const updateJobHandler: RequestHandler<
   { company?: string; position?: string }
 > = async (req, res) => {
   const { id } = req.params;
-  const body = req.body;
-
-  if (!body?.company && !body?.position) {
-    throw new BadRequestError(
-      "Please provide at least one field to update (company or position)"
-    );
-  }
   const updatedJob = await Job.findByIdAndUpdate(id, req.body, {
     new: true,
   });
-
-  if (!updatedJob) {
-    throw new NotFoundError("Job not found");
-  }
 
   res
     .status(StatusCodes.OK)
@@ -70,14 +51,6 @@ const updateJobHandler: RequestHandler<
 
 const deleteJobHandler: RequestHandler<{ id: string }> = async (req, res) => {
   const { id } = req.params;
-  if (!id) {
-    throw new NotFoundError("Please provide job id");
-  }
-  const job = await Job.findById(id);
-  if (!job) {
-    throw new NotFoundError("Job not found");
-  }
-
   await Job.findByIdAndDelete(id);
   res.status(StatusCodes.NO_CONTENT).json({
     msg: "Job deleted successfully",

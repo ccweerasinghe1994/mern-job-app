@@ -1,5 +1,5 @@
 import { Schema, model } from "mongoose";
-import { IJob } from "../types/types.js";
+import { IJob, JOB_STATUS, JOB_TYPE } from "../types/types.js";
 
 const jobSchema = new Schema<IJob>(
   {
@@ -7,13 +7,13 @@ const jobSchema = new Schema<IJob>(
     position: String,
     jobStatus: {
       type: String,
-      enum: ["pending", "interview", "declined"],
-      default: "pending",
+      enum: Object.values(JOB_STATUS),
+      default: JOB_STATUS.PENDING,
     },
     jobType: {
       type: String,
-      enum: ["full-time", "part-time", "internship"],
-      default: "full-time",
+      enum: Object.values(JOB_TYPE),
+      default: JOB_TYPE.FULL_TIME,
     },
     jobLocation: {
       type: String,

@@ -6,17 +6,31 @@ import {
   getJobHandler,
   updateJobHandler,
 } from "../jobController/job.controller.js";
+import {
+  createJobValidation,
+  mongoDbRecordExistsValidationMiddleware,
+  updateJobValidation,
+} from "../middleware/validationMiddleware.js";
 
 const router = Router();
 
 router.get("/", getAllJobsHandler);
 
-router.post("/", createJobHandler);
+router.post("/", createJobValidation, createJobHandler);
 
-router.get("/:id", getJobHandler);
+router.get("/:id", mongoDbRecordExistsValidationMiddleware, getJobHandler);
 
-router.patch("/:id", updateJobHandler);
+router.patch(
+  "/:id",
+  mongoDbRecordExistsValidationMiddleware,
+  updateJobValidation,
+  updateJobHandler
+);
 
-router.delete("/:id", deleteJobHandler);
+router.delete(
+  "/:id",
+  mongoDbRecordExistsValidationMiddleware,
+  deleteJobHandler
+);
 
 export default router;

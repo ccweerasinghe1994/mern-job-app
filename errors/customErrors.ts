@@ -11,7 +11,10 @@ class NotFoundError extends Error {
 }
 class BadRequestError extends Error {
   statusCode: number;
-  constructor(message: string) {
+  constructor(message: string | string[]) {
+    if (Array.isArray(message)) {
+      message = message.join(", ");
+    }
     super(message);
     this.name = "BadRequestError";
     this.statusCode = StatusCodes.BAD_REQUEST;
