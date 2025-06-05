@@ -1,7 +1,7 @@
 import { RequestHandler } from "express";
 import { StatusCodes } from "http-status-codes";
 import { HydratedDocument } from "mongoose";
-import { NotFoundError } from "../errors/customErrors.js";
+import { BadRequestError, NotFoundError } from "../errors/customErrors.js";
 import { default as Job } from "../models/jobModel.js";
 import { IJob } from "../types/types.js";
 
@@ -14,10 +14,9 @@ const createJobHandler: RequestHandler = async (req, res) => {
   const { company, position }: { company: string; position: string } = req.body;
 
   if (!company || !position) {
-    res
-      .status(StatusCodes.BAD_REQUEST)
-      .json({ msg: "please provide company and position" });
-    return;
+    throw new BadRequestError(
+      "Please provide company and position for the job"
+    );
   }
 
   const newJob: HydratedDocument<IJob> = new Job({ company, position });
@@ -52,10 +51,9 @@ const updateJobHandler: RequestHandler<
   const body = req.body;
 
   if (!body?.company && !body?.position) {
-    res
-      .status(StatusCodes.BAD_REQUEST)
-      .json({ msg: "Please provide company or position" });
-    return;
+    throw new BadRequestError(
+      "Please provide at least one field to update (company or position)"
+    );
   }
   const updatedJob = await Job.findByIdAndUpdate(id, req.body, {
     new: true,
