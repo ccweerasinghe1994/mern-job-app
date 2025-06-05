@@ -1,8 +1,8 @@
 import { RequestHandler } from "express";
 import { HydratedDocument } from "mongoose";
 import { nanoid } from "nanoid";
-import Job from "../models/jobModel.js";
-import { IJob, IJobDocument } from "../types/types.js";
+import { default as Job } from "../models/jobModel.js";
+import { IJob } from "../types/types.js";
 
 let jobs = [
   { id: nanoid(), company: "apple", position: "front-end" },
@@ -10,7 +10,8 @@ let jobs = [
 ];
 
 const getAllJobsHandler: RequestHandler = async (req, res) => {
-  res.status(200).json({ jobs });
+  const jobsFromDB = await Job.find({});
+  res.status(200).json({ jobs: jobsFromDB });
 };
 
 const createJobHandler: RequestHandler = async (req, res) => {
@@ -24,7 +25,7 @@ const createJobHandler: RequestHandler = async (req, res) => {
   const newJob: HydratedDocument<IJob> = new Job({ company, position });
 
   const job = await newJob.save();
-  
+
   res.status(201).json({ msg: "Job created successfully", job });
 };
 
@@ -36,7 +37,7 @@ const getJobHandler: RequestHandler<{ id: string }> = async (req, res) => {
     return;
   }
 
-  const job = jobs.find((job) => job.id === id);
+  const job = await Job.findById(id);
   if (!job) {
     res.status(404).json({ msg: "Job not found" });
     return;
@@ -56,31 +57,33 @@ const updateJobHandler: RequestHandler<
     res.status(400).json({ msg: "Please provide company or position" });
     return;
   }
+  const updatedJob = await Job.findByIdAndUpdate(id, req.body, {
+    new: true,
+  });
 
-  const job = jobs.find((job) => job.id === id);
-  if (!job) {
+  if (!updatedJob) {
     res.status(404).json({ msg: "Job not found" });
     return;
   }
-  if (body.company) {
-    job.company = body.company;
-  }
-  if (body.position) {
-    job.position = body.position;
-  }
-  res.status(200).json({ message: "Job updated successfully", job });
+
+  res
+    .status(200)
+    .json({ message: "Job updated successfully", job: updatedJob });
 };
 
 const deleteJobHandler: RequestHandler<{ id: string }> = async (req, res) => {
   const { id } = req.params;
-
-  const jobIndex = jobs.findIndex((job) => job.id === id);
-  if (jobIndex === -1) {
+  if (!id) {
+    res.status(400).json({ msg: "Please provide job id" });
+    return;
+  }
+  const job = await Job.findById(id);
+  if (!job) {
     res.status(404).json({ msg: "Job not found" });
     return;
   }
 
-  jobs.splice(jobIndex, 1);
+  await Job.findByIdAndDelete(id);
   res.status(204).json({
     msg: "Job deleted successfully",
   });

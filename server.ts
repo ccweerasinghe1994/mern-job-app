@@ -1,7 +1,7 @@
 import express, { NextFunction, Request, Response } from "express";
+import "express-async-errors";
 import { connect } from "mongoose";
 import morgan from "morgan";
-
 // constants
 import { MONGO_URI, NODE_ENV, PORT } from "./constants.js";
 // controllers

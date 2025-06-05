@@ -1,6 +1,6 @@
 import { Document } from "mongoose";
 
-interface IJob {
+export interface IJob {
   company: string;
   position: string;
   jobStatus: "pending" | "interview" | "declined";
@@ -8,7 +8,7 @@ interface IJob {
   jobLocation: string;
 }
 
-interface IJobDocument extends IJob, Document {
+export interface IJobDocument extends IJob, Document {
   createdAt: Date;
   updatedAt: Date;
 }
