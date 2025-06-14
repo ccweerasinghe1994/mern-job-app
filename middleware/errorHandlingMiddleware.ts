@@ -1,13 +1,23 @@
 import type { ErrorRequestHandler } from "express";
-import { BadRequestError, NotFoundError } from "../errors/customErrors.js";
+import {
+  BadRequestError,
+  NotFoundError,
+  UnauthenticatedError,
+  UnauthorizedError,
+} from "../errors/customErrors.js";
 
 const errorHandlingMiddleware: ErrorRequestHandler = (err, _req, res, next) => {
-  if (err instanceof NotFoundError || BadRequestError) {
+  console.error(err);
+  if (
+    err instanceof NotFoundError ||
+    err instanceof BadRequestError ||
+    err instanceof UnauthenticatedError ||
+    err instanceof UnauthorizedError
+  ) {
     res.status(err.statusCode).json({ msg: err.message });
     return;
   }
 
-  console.error(err);
   res.status(500).json({ msg: "something went wrong" });
 };
 

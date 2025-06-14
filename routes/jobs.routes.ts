@@ -10,7 +10,7 @@ import {
   createJobValidation,
   mongoDbRecordExistsValidationMiddleware,
   updateJobValidation,
-} from "../middleware/validationMiddleware.js";
+} from "../middleware/jobValidationMiddleware.js";
 
 const router = Router();
 

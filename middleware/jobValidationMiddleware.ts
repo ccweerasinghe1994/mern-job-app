@@ -1,29 +1,9 @@
-import { RequestHandler } from "express";
-import { body, param, validationResult } from "express-validator";
+import { body, param } from "express-validator";
 import { Types } from "mongoose";
-import { BadRequestError } from "../errors/customErrors.js";
+import { BadRequestError, UnauthorizedError } from "../errors/customErrors.js";
 import jobModel from "../models/jobModel.js";
-import { JOB_STATUS, JOB_TYPE } from "../types/types.js";
-const validationMiddleware: RequestHandler = (req, _res, next) => {
-  const errors = validationResult(req);
-
-  if (!errors.isEmpty()) {
-    const errorMessages = errors.array().map((error) => error.msg);
-    throw new BadRequestError(errorMessages);
-  }
-  next();
-};
-
-const validationWithErrors = (
-  validatedValues: RequestHandler[]
-): RequestHandler[] => {
-  return [...validatedValues, validationMiddleware];
-};
-validationWithErrors([
-  body("company").notEmpty().withMessage("company is required"),
-  body("position").notEmpty().withMessage("position is required"),
-]);
-
+import { JOB_STATUS, JOB_TYPE, TUserRole } from "../types/types.js";
+import { validationWithErrors } from "./commonValidation.js";
 export const createJobValidation = validationWithErrors([
   body("company").notEmpty().withMessage("company is required"),
   body("position").notEmpty().withMessage("position is required"),
@@ -67,7 +47,7 @@ export const mongoDbIdValidationMiddleware = validationWithErrors([
 ]);
 
 export const mongoDbRecordExistsValidationMiddleware = validationWithErrors([
-  param("id").custom(async (id: string) => {
+  param("id").custom(async (id: string, { req }) => {
     const validId = Types.ObjectId.isValid(id);
     if (!validId) {
       throw new BadRequestError("Invalid MongoDB ID format");
@@ -75,6 +55,13 @@ export const mongoDbRecordExistsValidationMiddleware = validationWithErrors([
     const job = await jobModel.findById(id);
     if (!job) {
       throw new BadRequestError("Job not found");
+    }
+
+    const isAdmin = req.user.role === TUserRole.ADMIN;
+    const isOwner = req.user.userId === job._id.toString();
+
+    if (!isAdmin && !isOwner) {
+      throw new UnauthorizedError("your are not allowed to access this route");
     }
   }),
 ]);

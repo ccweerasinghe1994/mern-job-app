@@ -6,7 +6,7 @@ import { default as Job } from "../models/jobModel.js";
 import { IJob } from "../types/types.js";
 
 const getAllJobsHandler: RequestHandler = async (req, res) => {
-  const jobsFromDB = await Job.find({});
+  const jobsFromDB = await Job.find({ createdBy: req.user.userId });
   res.status(StatusCodes.OK).json({ jobs: jobsFromDB });
 };
 
@@ -18,8 +18,12 @@ const createJobHandler: RequestHandler = async (req, res) => {
       "Please provide company and position for the job"
     );
   }
-
-  const newJob: HydratedDocument<IJob> = new Job({ company, position });
+  const createdBy = req.user.userId;
+  const newJob: HydratedDocument<IJob> = new Job({
+    company,
+    position,
+    createdBy,
+  });
 
   const job = await newJob.save();
 
