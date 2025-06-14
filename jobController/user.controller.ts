@@ -1,7 +1,7 @@
 import { RequestHandler } from "express";
 import { StatusCodes } from "http-status-codes";
 import { UserModel } from "../models/user.model.js";
-import { TUserDocument } from "../types/types.js";
+import { TUpdateUserRequestBody, TUserDocument } from "../types/types.js";
 
 const getCurrentUser: RequestHandler<{}, { user: TUserDocument }> = async (
   req,
@@ -14,11 +14,27 @@ const getCurrentUser: RequestHandler<{}, { user: TUserDocument }> = async (
 };
 
 const getApplicationStats: RequestHandler = async (req, res) => {
-  res.status(StatusCodes.OK).json({ msg: "application stats" });
+  const totalJobs = await UserModel.countDocuments();
+  const totalUsers = await UserModel.countDocuments();
+  res
+    .status(StatusCodes.OK)
+    .json({ msg: "application stats", totalJobs, totalUsers });
 };
 
-const updateUser: RequestHandler = async (req, res) => {
-  res.status(StatusCodes.OK).json({ msg: "update user" });
+const updateUser: RequestHandler<{}, {}, TUpdateUserRequestBody> = async (
+  req,
+  res
+) => {
+  const { name, email, lastName, location } = req.body;
+  const { userId } = req.user;
+  const user: TUpdateUserRequestBody = {
+    name,
+    email,
+    lastName,
+    location,
+  };
+  await UserModel.findByIdAndUpdate(userId, user);
+  res.status(StatusCodes.OK).json({ msg: "User updated successfully" });
 };
 
 export { getApplicationStats, getCurrentUser, updateUser };

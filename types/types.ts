@@ -59,6 +59,13 @@ export type TUser = {
   role: TUserRole;
 };
 
+export type TUpdateUserRequestBody = {
+  name?: string;
+  email?: string;
+  lastName?: string;
+  location?: string;
+};
+
 export type TUserWithId = TUser & { userId: string };
 export type TUserDocument = TUser & {
   _id: Types.ObjectId;

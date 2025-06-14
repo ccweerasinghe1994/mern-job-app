@@ -1,6 +1,6 @@
 import { RequestHandler } from "express";
 import { UnauthenticatedError } from "../errors/customErrors.js";
-import { TJWTPayload } from "../types/types.js";
+import { TJWTPayload, TUserRole } from "../types/types.js";
 import { verifyJWTToken } from "../utils/tokenUtilities.js";
 
 const authenticationMiddleware: RequestHandler = (req, res, next) => {
@@ -23,4 +23,13 @@ const authenticationMiddleware: RequestHandler = (req, res, next) => {
   }
 };
 
-export { authenticationMiddleware };
+function authorizedRolesMiddleware(...roles: TUserRole[]): RequestHandler {
+  return (req, res, next) => {
+    if (!roles.includes(req.user.role!)) {
+      throw new UnauthenticatedError("Unauthorized");
+    }
+    next();
+  };
+}
+
+export { authenticationMiddleware, authorizedRolesMiddleware };

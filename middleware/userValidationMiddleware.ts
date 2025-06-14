@@ -42,9 +42,26 @@ const checkEmailPasswordValidationMiddleware: RequestHandler[] =
     }),
   ]);
 
+const userUpdateValidationMiddleware: RequestHandler[] = validationWithErrors([
+  body("name").optional().notEmpty().withMessage("Name is required"),
+  body("email")
+    .optional()
+    .isEmail()
+    .withMessage("Valid email is required")
+    .custom(async (email: string, { req }) => {
+      const user = await UserModel.findOne({ email });
+      if (user && user._id.toString() !== req.user.userId) {
+        throw new BadRequestError("Email is already in use");
+      }
+    }),
+  body("lastName").optional().notEmpty().withMessage("Last name is required"),
+  body("location").optional().notEmpty().withMessage("Location is required"),
+]);
+
 export {
   checkEmailPasswordValidationMiddleware,
   userAlreadyRegisteredMiddleware,
   userLoginValidationMiddleware,
   userRegisterValidationMiddleware,
+  userUpdateValidationMiddleware,
 };
