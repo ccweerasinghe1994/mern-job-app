@@ -29,7 +29,9 @@ app.use("/api/v1/register", RegisterRouter);
 app.use("/api/v1/login", LoginRouter);
 app.use("/api/v1/logout", LogOutRouter);
 app.use("/api/v1/users", authenticationMiddleware, UserRouter);
-
+app.get("/api/v1/test", (req, res) => {
+  res.json({ msg: "test route" });
+});
 app.get("/{*splat}", notFoundHandler);
 
 app.use(errorHandlingMiddleware);
