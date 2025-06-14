@@ -1,53 +1,192 @@
 
+# MERN Job Application Tracker
+
+A full-stack job tracking application built with the MERN stack (MongoDB, Express.js, React, Node.js) using TypeScript throughout.
+
+## 🚀 Features
+
+- **User Authentication**: Secure JWT-based authentication with HTTP-only cookies
+- **Job Management**: Complete CRUD operations for job applications
+- **Status Tracking**: Track application progress (Pending, Interview, Declined)
+- **Dashboard Analytics**: Visual insights into job search progress
+- **Responsive Design**: Modern UI with dark/light theme support
+- **Type Safety**: Full TypeScript implementation for better development experience
+
+## 🏗️ Project Structure
+
+```
+mern-job-app/
+├── client/                 # React frontend
+│   ├── src/
+│   │   ├── components/     # Reusable UI components
+│   │   ├── pages/          # Page components
+│   │   ├── context/        # React context for state management
+│   │   ├── hooks/          # Custom React hooks
+│   │   ├── api/            # API integration
+│   │   └── utils/          # Frontend utilities
+│   └── package.json
+├── jobController/          # Backend controllers
+├── middleware/             # Express middleware
+├── models/                 # Mongoose models
+├── routes/                 # API routes
+├── types/                  # Shared TypeScript types
+├── utils/                  # Backend utilities
+├── memory-bank/            # Project documentation
+├── server.ts               # Express server entry point
+└── package.json
+```
+
+## 🛠️ Technology Stack
+
+### Backend
+- **Node.js** with **Express.js** - Server framework
+- **TypeScript** - Type-safe development
+- **MongoDB** with **Mongoose** - Database and ODM
+- **JWT** - Authentication tokens
+- **bcryptjs** - Password hashing
+- **Express Validator** - Input validation
+
+### Frontend
+- **React 19** - UI library
+- **TypeScript** - Type safety
+- **Vite** - Build tool and dev server
+- **React Router** - Client-side routing
+- **Styled Components** - CSS-in-JS styling
+- **React Query** - Server state management
+- **Axios** - HTTP client
+
+### Development Tools
+- **Concurrently** - Run multiple processes
+- **Nodemon** - Auto-restart server
+- **ESLint** - Code linting
+- **PNPM** - Package manager
+
+## 🚦 Getting Started
+
+### Prerequisites
+- Node.js (LTS version)
+- MongoDB (local or cloud)
+- PNPM package manager
+
+### Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd mern-job-app
+   ```
+
+2. **Install dependencies**
+   ```bash
+   # Install backend dependencies
+   pnpm install
+   
+   # Install frontend dependencies
+   cd client
+   pnpm install
+   cd ..
+   ```
+
+3. **Environment Setup**
+   Create a `.env` file in the root directory:
+   ```env
+   NODE_ENV=development
+   PORT=5100
+   MONGO_URI=mongodb://localhost:27017/jobify
+   JWT_SECRET=your-secret-key
+   JWT_EXPIRES_IN=1d
+   ```
+
+4. **Start Development**
+   ```bash
+   # Run both backend and frontend concurrently
+   pnpm run dev
+   ```
+
+   This command will:
+   - Start TypeScript compilation in watch mode
+   - Run the Express server with nodemon
+   - Start the React development server
+
+   Access the application at `http://localhost:5173` (frontend) and `http://localhost:5100` (backend API)
+
+## 📁 Memory Bank
+
+This project includes a comprehensive memory bank system for documentation and context preservation:
+
+- **`memory-bank/projectbrief.md`** - Project overview and requirements
+- **`memory-bank/productContext.md`** - User needs and business context
+- **`memory-bank/systemPatterns.md`** - Architecture and design patterns
+- **`memory-bank/techContext.md`** - Technology stack and development setup
+- **`memory-bank/activeContext.md`** - Current work focus and decisions
+- **`memory-bank/progress.md`** - Implementation status and next steps
+
+## 🔧 Available Scripts
+
+### Backend Scripts
+```bash
+pnpm run build        # Compile TypeScript to JavaScript
+pnpm run start        # Start server with nodemon
+pnpm run dev:watch    # TypeScript compilation in watch mode
+```
+
+### Frontend Scripts
+```bash
+cd client
+pnpm run dev          # Start Vite development server
+pnpm run build        # Build for production
+pnpm run preview      # Preview production build
+```
+
+### Development Scripts
+```bash
+pnpm run dev          # Run backend + frontend concurrently
+pnpm run client       # Run only frontend
+```
+
+## 🔐 Authentication
+
+The application uses JWT tokens stored in HTTP-only cookies for security:
+- Registration and login endpoints
+- Protected routes requiring authentication
+- Automatic token validation on requests
+- Secure logout with cookie clearing
+
+## 📊 API Endpoints
+
+### Authentication
+- `POST /api/v1/register` - User registration
+- `POST /api/v1/login` - User login  
+- `POST /api/v1/logout` - User logout
+
+### Jobs (Protected Routes)
+- `GET /api/v1/jobs` - Get all user jobs
+- `POST /api/v1/jobs` - Create new job
+- `GET /api/v1/jobs/:id` - Get specific job
+- `PATCH /api/v1/jobs/:id` - Update job
+- `DELETE /api/v1/jobs/:id` - Delete job
+
+### User (Protected Routes)
+- `GET /api/v1/users/current-user` - Get current user
+- `PATCH /api/v1/users/update-user` - Update user profile
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the ISC License.
+
+---
+
+## Development Notes
 
 #### Axios
-
-Axios is a popular JavaScript library that simplifies the process of making HTTP requests from web browsers or Node.js. It provides a simple and elegant API for performing asynchronous HTTP requests, supporting features such as making GET, POST, PUT, and DELETE requests, handling request and response headers, handling request cancellation, and more.
-
-[Axios Docs](https://axios-http.com/docs/intro)
-
-```sh
-npm i axios@1.3.6
-```
-
-main.jsx
-
-```js
-import axios from 'axios';
-
-const data = await axios.get('/api/v1/test');
-console.log(data);
-```
-
-#### Custom Instance
-
-utils/customFetch.js
-
-```js
-import axios from 'axios';
-const customFetch = axios.create({
-  baseURL: '/api/v1',
-});
-
-export default customFetch;
-```
-
-main.jsx
-
-```js
-import customFetch from './utils/customFetch.js';
-
-const data = await customFetch.get('/test');
-console.log(data);
-```
-
-#### Typical Form Submission
-
-```js
-import { useState } from 'react';
-import axios from 'axios';
-const MyForm = () => {
-  const [value, setValue] = useState('');
 
   const handleSubmit = async (event) => {
     event.preventDefault();
