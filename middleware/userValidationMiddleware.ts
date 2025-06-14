@@ -22,7 +22,7 @@ const userAlreadyRegisteredMiddleware: RequestHandler[] = validationWithErrors([
   body("email").custom(async (email: string) => {
     const user = await UserModel.findOne({ email });
     if (user) {
-      throw new BadRequestError("User already registered");
+      throw new BadRequestError("email already registered");
     }
   }),
 ]);

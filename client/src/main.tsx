@@ -1,17 +1,13 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { API } from "./api/api.ts";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
 import App from "./App.tsx";
 import "./index.css";
 
-try {
-  const data = await API.get("/test");
-  console.log(data);
-} catch (error) {
-  console.error("Failed to connect to the server:", error);
-}
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <App />
+    <ToastContainer position="top-center" />
   </StrictMode>
 );

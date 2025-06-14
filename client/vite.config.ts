@@ -1,5 +1,6 @@
 /// <reference types="vite/client" />
 import react from "@vitejs/plugin-react";
+import { resolve } from "path";
 import { defineConfig, loadEnv } from "vite";
 
 // https://vite.dev/config/
@@ -8,6 +9,18 @@ export default defineConfig(({ mode }) => {
 
   return {
     plugins: [react()],
+    resolve: {
+      alias: {
+        "@": resolve(__dirname, "./src"),
+        "@/types": resolve(__dirname, "./src/types"),
+        "@/components": resolve(__dirname, "./src/components"),
+        "@/pages": resolve(__dirname, "./src/pages"),
+        "@/hooks": resolve(__dirname, "./src/hooks"),
+        "@/utils": resolve(__dirname, "./src/utils"),
+        "@/api": resolve(__dirname, "./src/api"),
+        "@/assets": resolve(__dirname, "./src/assets"),
+      },
+    },
     server: {
       proxy: {
         "/api": {

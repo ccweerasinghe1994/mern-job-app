@@ -23,7 +23,13 @@ mern-job-app/
 │   │   ├── context/        # React context for state management
 │   │   ├── hooks/          # Custom React hooks
 │   │   ├── api/            # API integration
+│   │   ├── types/          # Frontend TypeScript types
+│   │   │   ├── index.ts    # Main export file
+│   │   │   ├── shared.ts   # Business logic types
+│   │   │   ├── components.ts # UI component types
+│   │   │   └── api.ts      # API and HTTP types
 │   │   └── utils/          # Frontend utilities
+│   ├── vite.config.ts      # Vite config with path aliases
 │   └── package.json
 ├── jobController/          # Backend controllers
 ├── middleware/             # Express middleware
@@ -35,6 +41,20 @@ mern-job-app/
 ├── server.ts               # Express server entry point
 └── package.json
 ```
+
+## 🎯 Recent Updates
+
+### ✨ Types System Implementation
+- **Comprehensive Types**: 4-file organization for frontend types
+- **Path Aliases**: Clean @ imports configured throughout the project
+- **Type Safety**: Strict TypeScript with const assertions
+- **Documentation**: Complete usage guide and best practices
+
+### 🔧 Development Experience Enhancements
+- **Clean Imports**: `import type { IJob } from '@/types'` instead of relative paths
+- **Enhanced Vite Config**: Path aliases for all major directories
+- **TypeScript Strict Mode**: erasableSyntaxOnly and verbatimModuleSyntax
+- **Working Registration**: Complete registration flow with toast notifications
 
 ## 🛠️ Technology Stack
 
@@ -182,58 +202,7 @@ The application uses JWT tokens stored in HTTP-only cookies for security:
 
 This project is licensed under the ISC License.
 
----
 
-## Development Notes
-
-#### Axios
-
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    const data = await axios.post('url', { value });
-  };
-
-  return <form onSubmit={handleSubmit}>.....</form>;
-};
-
-export default MyForm;
-```
-
-#### React Router - Action
-
-Route actions are the "writes" to route loader "reads". They provide a way for apps to perform data mutations with simple HTML and HTTP semantics while React Router abstracts away the complexity of asynchronous UI and revalidation. This gives you the simple mental model of HTML + HTTP (where the browser handles the asynchrony and revalidation) with the behavior and UX capabilities of modern SPAs.
-
-Register.jsx
-
-```js
-import { Form, redirect, useNavigation, Link } from 'react-router-dom';
-import Wrapper from '../assets/wrappers/RegisterAndLoginPage';
-import { FormRow, Logo } from '../components';
-
-const Register = () => {
-  return (
-    <Wrapper>
-      <Form method='post' className='form'>
-        ...
-      </Form>
-    </Wrapper>
-  );
-};
-export default Register;
-```
-
-App.jsx
-
-```jsx
-{
-  path: 'register',
-  element: <Register />,
-  action: () => {
-   console.log('hello there');
-   return null;
-    },
-},
-```
 
 #### Register User
 
