@@ -10,10 +10,14 @@ import { notFoundHandler } from "./jobController/job.controller.js";
 import cookieParser from "cookie-parser";
 import { authenticationMiddleware } from "./middleware/authenticationMiddleware.js";
 import errorHandlingMiddleware from "./middleware/errorHandlingMiddleware.js";
-import JobRouter from "./routes/jobs.routes.js";
-import { LoginRouter } from "./routes/login.routes.js";
-import { LogOutRouter } from "./routes/logout.routes.js";
-import { RegisterRouter } from "./routes/register.routes.js";
+import {
+  JobRouter,
+  LogOutRouter,
+  LoginRouter,
+  RegisterRouter,
+  UserRouter,
+} from "./routes/index.js";
+
 const app = express();
 if (NODE_ENV === "development") {
   app.use(morgan("dev"));
@@ -24,6 +28,7 @@ app.use("/api/v1/jobs", authenticationMiddleware, JobRouter);
 app.use("/api/v1/register", RegisterRouter);
 app.use("/api/v1/login", LoginRouter);
 app.use("/api/v1/logout", LogOutRouter);
+app.use("/api/v1/users", authenticationMiddleware, UserRouter);
 
 app.get("/{*splat}", notFoundHandler);
 

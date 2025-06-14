@@ -60,6 +60,12 @@ export type TUser = {
 };
 
 export type TUserWithId = TUser & { userId: string };
+export type TUserDocument = TUser & {
+  _id: Types.ObjectId;
+  __v: number;
+  createdAt: Date;
+  updatedAt: Date;
+};
 
 export type TJWTPayload = JwtPayload & {
   userId: Types.ObjectId;

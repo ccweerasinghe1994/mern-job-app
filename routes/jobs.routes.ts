@@ -12,25 +12,25 @@ import {
   updateJobValidation,
 } from "../middleware/jobValidationMiddleware.js";
 
-const router = Router();
+const JobRouter = Router();
 
-router.get("/", getAllJobsHandler);
+JobRouter.get("/", getAllJobsHandler);
 
-router.post("/", createJobValidation, createJobHandler);
+JobRouter.post("/", createJobValidation, createJobHandler);
 
-router.get("/:id", mongoDbRecordExistsValidationMiddleware, getJobHandler);
+JobRouter.get("/:id", mongoDbRecordExistsValidationMiddleware, getJobHandler);
 
-router.patch(
+JobRouter.patch(
   "/:id",
   mongoDbRecordExistsValidationMiddleware,
   updateJobValidation,
   updateJobHandler
 );
 
-router.delete(
+JobRouter.delete(
   "/:id",
   mongoDbRecordExistsValidationMiddleware,
   deleteJobHandler
 );
 
-export default router;
+export { JobRouter };
